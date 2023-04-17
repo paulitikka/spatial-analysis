@@ -11,14 +11,9 @@ require(dplyr);require(ggplot2);require(magick);require(cowplot);
 require(ggpubr);library(caret);library(AppliedPredictiveModeling); library(BayesSpace)
 
 ok='D:/Data for Seurat Analysis/filtered_gene_bc_matrices/Data Filtered and Processed in Seurat/Spatial'; setwd(dir=ok)# 
-
-save.image("minks_optia.RData")
-load("minkse.RData"); load("newminks.RData"); load('minks_opti.RData'); 
-load("minks_optia.RData") 
-
-# load("mips.RData") 
-
-#if data in csc, use paultik, pwd: Ze..., to https://sd-connect.csc.fi/browse/paulitik/90bd2275c4b4413b89deead4702615ac
+save.image("minks_optia.RData") #load("minkse.RData"); load("newminks.RData"); load('minks_opti.RData'); 
+#load("minks_optia.RData") # load("mips.RData") 
+#if data in csc, use paul.., pwd: Z..., to https://sd-connect.csc.fi/browse/paulitik/90bd2275c4b4413b89deead4702615ac
 
 #Seurat workflow #or: A1_spatial <- data_mink_E14.5_1...
 #Let's mark 'N1_spatial's as 'cortexes'
@@ -41,7 +36,6 @@ jpeg("Mink3_basics.jpg", width = 10000, height = 10000, quality = 100,pointsize 
 p1 <- DimPlot(D1_spatial, reduction = "umap", label = TRUE,pt.size = 8)
 p2 <- SpatialDimPlot(D1_spatial, label = TRUE, label.size = 3,pt.size.factor = 3)
 jpeg("Mink4_basics.jpg", width = 10000, height = 10000, quality = 100,pointsize = 8, res=1200);p1 + p2;dev.off()
-
 
 #Highlight regions, cortexes seem to be working but not the original big data...
 # SpatialDimPlot(cortex1, cells.highlight = CellsByIdentities(object = cortex1, idents = 2), facet.highlight = TRUE, ncol = 1, pt.size.factor = 2.5,  cols.highlight = c("grey50","seagreen3"))
@@ -185,26 +179,19 @@ sce_B1 <- spatialCluster(sce_B1, q=4, platform = "Visium", d=6, init.method = "m
 sce_C1 <- spatialCluster(sce_C1, q=4, platform = "Visium", d=6, init.method = "mclust", model = "t", gamma = 2, nrep = 10000, burn.in = 100, save.chain = TRUE);head(colData(sce_C1))
 sce_D1 <- spatialCluster(sce_D1, q=4, platform = "Visium", d=6, init.method = "mclust", model = "t", gamma = 2, nrep = 10000, burn.in = 100, save.chain = TRUE);head(colData(sce_D1))
 
-#visualising spatial clusters
-
+#visualising spatial clusters, here you save the data unless not specified already:
 ok='D:/Data for Seurat Analysis/filtered_gene_bc_matrices/Data Filtered and Processed in Seurat/Spatial/devio'; setwd(dir=ok)#
 
 clusterPlot(sce_A1); 
 clusterPlot(sce_B1)
 clusterPlot(sce_C1); 
 clusterPlot(sce_D1)
-
 jpeg('sce_A1_c.jpg', width =10000 , height = 10000, quality = 100,pointsize = 12, res=1000);clusterPlot(sce_A1);dev.off()
 jpeg('sce_B1_c.jpg', width =10000 , height = 10000, quality = 100,pointsize = 12, res=1000);clusterPlot(sce_B1);dev.off()
 jpeg('sce_C1_mod.jpg', width =10000 , height = 10000, quality = 100,pointsize = 12, res=1000);clusterPlot(sce_C1);dev.off()
 jpeg('sce_D1_c.jpg', width =10000 , height = 10000, quality = 100,pointsize = 12, res=1000);clusterPlot(sce_D1);dev.off()
 
-
-# https://lmweber.org/OSTA-book/image-segmentation-visium.html#identify-number-of-cells-per-spot
-# https://lmweber.org/OSTA-book/space-ranger-visium.html#space-ranger-visium
-#http://research.libd.org/VistoSeg/
-#http://research.libd.org/VistoSeg/step-4-gui-to-count-nuclei-in-a-visium-spot.html
-
+#DE genes and image analysis:
 ## Convert SCE to Seurat object and use BayesSpace cluster as identifier
 sobj <- CreateSeuratObject(counts=logcounts(sce_C1),assay='Spatial',meta.data=as.data.frame(colData(sce_C1)))
 sobj <- SetIdent(sobj, value = "spatial.cluster")
@@ -775,6 +762,13 @@ plotCCcomDotplot(gobject = A1,
 #%%Solving the number of cells in the spots
 #https://www.r-orms.org/mixed-integer-linear-programming/practicals/problem-tsp/
 # https://towardsdatascience.com/linear-programming-in-r-444e9c199280
+
+# Calculating the number of cells in spot, some info, if not done via MILP (not working in Matlab):
+# https://lmweber.org/OSTA-book/image-segmentation-visium.html#identify-number-of-cells-per-spot
+# https://lmweber.org/OSTA-book/space-ranger-visium.html#space-ranger-visium
+#http://research.libd.org/VistoSeg/
+#http://research.libd.org/VistoSeg/step-4-gui-to-count-nuclei-in-a-visium-spot.html
+
 #Starting with epit spots:
 
 LinkedDimPlot(data1a);

@@ -1,3 +1,5 @@
+#I am analysing 10XVisium spatial transcriptomics data of mink incisors with Seurat, MILP, and other image analysis approaches. Pauli Tikka, 17.4.2023 
+
 #' human-oral-mucosa-spatial/OM-spatial.R
 #' at anacaetano
 #' anacaetano Add files via upload
